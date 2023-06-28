@@ -193,6 +193,7 @@ class Nimrod:
         self.n_data_specific_reals = self.hdr_element[22]
         self.n_data_specific_ints = self.hdr_element[23] + 1
         # Note "+ 1" because header value is count from element 109
+        self.origin = self.hdr_element[24]
         self.y_top = self.hdr_element[34]
         self.y_pixel_size = self.hdr_element[35]
         self.x_left = self.hdr_element[36]
