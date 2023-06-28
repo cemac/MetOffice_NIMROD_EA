@@ -186,6 +186,8 @@ class Nimrod:
         self.hdr_element.extend(spec_ints)
 
         # Duplicate some of values to give more meaningful names
+        self.dtype = self.hdr_element[12]
+        self.nbytes = self.hdr_element[13]
         self.nrows = self.hdr_element[16]
         self.ncols = self.hdr_element[17]
         self.n_data_specific_reals = self.hdr_element[22]
@@ -202,17 +204,26 @@ class Nimrod:
 
         # Read payload (actual raster data)
         array_size = self.ncols * self.nrows
-        check_record_len(infile, array_size * 2, "data start")
+        check_record_len(infile, array_size * self.nbytes, "data start")
 
-        self.data = array.array("h")
+        # Select array type to match data type
+        if self.dtype == 0:  # real
+            type_code = "f"
+        elif self.dtype == 1:  # int
+            type_code = "h"
+        else:  # byte
+            type_code = "b"
+        self.data = array.array(type_code)
         try:
             self.data.fromfile(infile, array_size)
             self.data.byteswap()
         except Exception:
+            if self.data.itemsize != self.nbytes:
+                err_msg = "Array itemsize does not match number of bytes per data element"
             infile.close()
-            raise Nimrod.PayloadReadError
+            raise Nimrod.PayloadReadError(err_msg)
 
-        check_record_len(infile, array_size * 2, "data end")
+        check_record_len(infile, array_size * self.nbytes, "data end")
         infile.close()
 
     def query(self):
