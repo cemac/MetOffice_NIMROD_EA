@@ -348,6 +348,16 @@ class Nimrod:
         self.hdr_element[17] = self.ncols
         self.hdr_element[34] = self.y_top
         self.hdr_element[36] = self.x_left
+        self.hdr_element[60] = self.y_top
+        self.hdr_element[61] = self.x_left
+        self.hdr_element[62] = self.y_top
+        self.hdr_element[63] = self.x_right
+        self.hdr_element[64] = self.y_bottom
+        self.hdr_element[65] = self.x_right
+        self.hdr_element[66] = self.y_bottom
+        self.hdr_element[67] = self.x_left
+        self.n_data_specific_reals = max(self.n_data_specific_reals, 8)
+        self.hdr_element[22] = self.n_data_specific_reals
 
     def extract_asc(self, outfile):
         """
